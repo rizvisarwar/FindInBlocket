@@ -4,11 +4,20 @@ function onPageDetailsReceived(pageDetails) {
     document.getElementById('title').value = pageDetails.title;
     document.getElementById('url').value = pageDetails.url;
     document.getElementById('productToSearch').value = pageDetails.productToSearch;
-    document.getElementById('summary').innerText = pageDetails.productToSearch;
+    document.getElementById('summary').innerText = findInBlocket(pageDetails.productToSearch);
 }
 
 // Global reference to the status display SPAN
 var statusDisplay = null;
+
+// find the item in Blocket. User Google search API
+function findInBlocket(item) {
+    var item1 = "item1";
+    var item2 = "item2";
+    var item3 = "item3";
+    var result = item1 + '\n' + item2 + '\n' + item3;
+    return result;
+}
 
 // POST the data to the server using XMLHttpRequest
 function addBookmark() {
