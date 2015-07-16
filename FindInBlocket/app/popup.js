@@ -1,10 +1,10 @@
 // This callback function is called when the content script has been 
 // injected and returned its results
 function onPageDetailsReceived(pageDetails) {
-    document.getElementById('title').value = pageDetails.title;
-    document.getElementById('url').value = pageDetails.url;
-    document.getElementById('productToSearch').value = pageDetails.productToSearch;
-    document.getElementById('summary').innerText = findInBlocket(pageDetails.productToSearch);
+    $('#title').val(pageDetails.title);
+    $('#url').val(pageDetails.url);
+    $('#productToSearch').val(pageDetails.productToSearch);
+    $('#summary').val(findInBlocket(pageDetails.productToSearch));
 }
 
 // Global reference to the status display SPAN
@@ -14,9 +14,39 @@ var statusDisplay = null;
 function findInBlocket(item) {
     var item1 = "item1";
     var item2 = "item2";
-    var item3 = "item3";
-    var result = item1 + '\n' + item2 + '\n' + item3;
+    getWebUrl("Loftsängstomme Blocket", function (imageUrl) {
+        var webResult = document.getElementById('summary');
+        webResult.innerText = webUrl;
+    }, function (errorMessage) {
+        renderStatus('Cannot display url. ' + errorMessage);
+    });
+    var result = item1 + '\n' + item2;
     return result;
+}
+
+function getWebUrl(searchTerm, callback, errorCallback) {
+    // Google web search - 1000 searches per day.
+    var searchUrl = 'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + encodeURIComponent(searchTerm);
+    var x = new XMLHttpRequest();
+    x.open('GET', searchUrl);
+    // The Google image search API responds with JSON, so let Chrome parse it.
+    x.responseType = 'json';
+    x.onload = function () {
+        // Parse and process the response from Google Web Search.
+        var response = x.response;
+        if (!response || !response.responseData || !response.responseData.results ||
+            response.responseData.results.length === 0) {
+            errorCallback('No response from Google Web search!');
+            return;
+        }
+        var firstResult = response.responseData.results[0];
+        var webUrl = firstResult.url;
+        callback(welUrl);
+    };
+    x.onerror = function () {
+        errorCallback('Network error.');
+    };
+    x.send();
 }
 
 // POST the data to the server using XMLHttpRequest
